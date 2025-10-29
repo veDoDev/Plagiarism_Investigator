@@ -1,0 +1,528 @@
+Here are the solutions to the assignment questions, presented with clear, correct, and concise explanations.
+
+---
+
+### 1. Data Cube and Operations
+
+A data cube is a multi-dimensional structure used for storing and analyzing data. For the college's requirement, we can conceptualize a data cube with three dimensions and one measure.
+
+**Dimensions:**
+*   **Course:** Represents different academic subjects or courses (e.g., "Database Management", "Algorithms", "Calculus").
+*   **Student:** Represents individual students (e.g., "Student A", "Student B", "Student C").
+*   **Time:** Represents periods when marks were recorded (e.g., "Fall 2023", "Spring 2024", "Annual 2023").
+
+**Measure:**
+*   **Aggregate Marks:** The numerical value representing the total or average marks obtained by a student in a course over a specific time.
+
+**Cube Creation:**
+Imagine a 3D cube where each axis corresponds to a dimension (Course, Student, Time). Each cell in this cube at the intersection of a specific course, student, and time period would contain the "Aggregate Marks" for that combination. This allows for quick retrieval and analysis of marks from various perspectives.
+
+```
+Example Structure (Conceptual):
+
+Cube[Course][Student][Time] = Aggregate_Marks
+
+Example Data Points:
+Cube["Database Management"]["Student A"]["Fall 2023"] = 85
+Cube["Algorithms"]["Student B"]["Spring 2024"] = 92
+Cube["Calculus"]["Student A"]["Fall 2023"] = 78
+```
+
+---
+
+**Description of OLAP Operations:**
+
+**i) Roll Up (Aggregation):**
+Roll-up performs aggregation on a data cube, either by climbing up a concept hierarchy for a dimension or by dimension reduction. This operation reduces the number of dimensions or the level of detail within a dimension.
+
+*   **Example:** Aggregating student-level marks to course-level average marks.
+    *   Starting with individual student marks for specific courses in a semester, a roll-up operation could calculate the *average mark for "Database Management" across all students* in "Fall 2023".
+    *   Another example would be rolling up "monthly" marks to "quarterly" or "yearly" marks within the Time dimension.
+
+**ii) Drill Down (Disaggregation):**
+Drill-down is the reverse of roll-up. It navigates from less detailed data to more detailed data, either by stepping down a concept hierarchy or by introducing a new dimension.
+
+*   **Example:** Moving from course-level average marks to individual student marks.
+    *   If we are viewing the *average mark for "Database Management" in "Fall 2023"*, a drill-down operation could show the *individual marks of each student* who took "Database Management" in "Fall 2023".
+    *   Another example would be drilling down from "yearly" marks to "quarterly" or "monthly" marks.
+
+**iii) Slice (Selection on One Dimension):**
+Slice performs a selection operation on one dimension of the cube, resulting in a sub-cube (a 2D plane if the original cube is 3D). It fixes a specific value for one or more dimensions and allows analysis across the remaining dimensions.
+
+*   **Example:** Focusing on marks for a specific course across all students and times.
+    *   A slice operation could extract all marks data related to "Database Management", effectively creating a 2D table showing "Aggregate Marks" by "Student" and "Time" *only for "Database Management"*.
+
+**iv) Dice (Selection on Multiple Dimensions):**
+Dice defines a sub-cube by performing a selection on two or more dimensions. It selects a range of values for multiple dimensions, creating a smaller cube.
+
+*   **Example:** Extracting marks for a specific set of students in certain courses within a particular time range.
+    *   A dice operation could extract the "Aggregate Marks" for "Student A" and "Student B" in "Database Management" and "Algorithms" courses, specifically for the "Fall 2023" and "Spring 2024" semesters. This would result in a smaller 3D cube subset.
+
+---
+
+### 2. Differentiate between Star Schema and Snowflake Schema. Design Star Schema for Company Sales.
+
+**Differentiation between Star Schema and Snowflake Schema:**
+
+| Feature          | Star Schema                                    | Snowflake Schema                               |
+| :--------------- | :--------------------------------------------- | :--------------------------------------------- |
+| **Structure**    | A central fact table surrounded by denormalized dimension tables. | A central fact table connected to normalized dimension tables, which may be further normalized into sub-dimension tables. |
+| **Normalization**| Dimensions are largely denormalized. Each dimension table contains all attributes for that dimension. | Dimensions are normalized. Hierarchical attributes are broken into separate dimension tables. |
+| **Redundancy**   | Higher data redundancy in dimension tables due to denormalization. | Lower data redundancy as dimensions are normalized. |
+| **Query Performance** | Generally faster query performance due to fewer joins (single join between fact and each dimension). | Can be slower due to more complex joins (multiple joins required to access all dimension attributes). |
+| **Complexity**   | Simpler to understand and implement.            | More complex due to multiple levels of dimension tables. |
+| **Storage Space**| May consume more storage due to redundancy.    | Generally consumes less storage due to normalization. |
+| **Maintenance**  | Easier to maintain dimension data (fewer tables to update). | More complex to maintain dimension data (updates might cascade across multiple tables). |
+| **Use Case**     | Preferred for simpler data warehouses, fast querying, and when redundancy is acceptable. | Preferred for complex data warehouses, when data integrity is critical, and for very large dimension tables to reduce redundancy. |
+
+---
+
+**Design Star Schema for Company Sales:**
+
+This Star Schema will include a central **Fact Table** for sales transactions and three **Dimension Tables** for Location, Item, and Time.
+
+**1. Fact Table: `FactSales`**
+This table contains the measures (numerical data) related to sales and foreign keys linking to the dimension tables.
+
+*   **Columns:**
+    *   `Location_Key` (FK, references `DimLocation`)
+    *   `Item_Key` (FK, references `DimItem`)
+    *   `Time_Key` (FK, references `DimTime`)
+    *   `SalesOrderID` (Degenerate Dimension / Transaction ID)
+    *   `QuantitySold` (Measure)
+    *   `UnitPrice` (Measure)
+    *   `DiscountAmount` (Measure)
+    *   `TotalSaleAmount` (Measure - `QuantitySold` * `UnitPrice` - `DiscountAmount`)
+    *   `Profit` (Measure)
+
+**2. Dimension Table: `DimLocation`**
+This table contains descriptive attributes about the sales location.
+
+*   **Columns:**
+    *   `Location_Key` (PK)
+    *   `City`
+    *   `StateProvince`
+    *   `Country`
+    *   `Region`
+    *   `SalesTerritory`
+
+**3. Dimension Table: `DimItem`**
+This table contains descriptive attributes about the items sold.
+
+*   **Columns:**
+    *   `Item_Key` (PK)
+    *   `ItemName`
+    *   `ItemDescription`
+    *   `Category`
+    *   `SubCategory`
+    *   `Brand`
+    *   `SupplierName`
+
+**4. Dimension Table: `DimTime`**
+This table contains descriptive attributes about the time of the sale.
+
+*   **Columns:**
+    *   `Time_Key` (PK)
+    *   `Date` (e.g., YYYY-MM-DD)
+    *   `DayOfWeek`
+    *   `DayOfMonth`
+    *   `Month`
+    *   `Quarter`
+    *   `Year`
+    *   `FiscalWeek`
+    *   `FiscalMonth`
+    *   `IsWeekend` (Boolean)
+
+**Relationships:**
+
+*   `FactSales.Location_Key` relates to `DimLocation.Location_Key` (Many-to-One)
+*   `FactSales.Item_Key` relates to `DimItem.Item_Key` (Many-to-One)
+*   `FactSales.Time_Key` relates to `DimTime.Time_Key` (Many-to-One)
+
+**Conceptual Diagram:**
+
+```
+           +-----------------+
+           |   DimLocation   |
+           +-----------------+
+           | Location_Key (PK)|
+           | City            |
+           | StateProvince   |
+           | Country         |
+           | Region          |
+           +-----------------+
+                  |
+                  |
+                  v
++-------------------------------------------------+
+|                    FactSales                    |
++-------------------------------------------------+
+| Location_Key (FK)                               |
+| Item_Key (FK)                                   |
+| Time_Key (FK)                                   |
+| SalesOrderID                                    |
+| QuantitySold                                    |
+| UnitPrice                                       |
+| DiscountAmount                                  |
+| TotalSaleAmount                                 |
+| Profit                                          |
++-------------------------------------------------+
+        ^                  ^
+        |                  |
++-----------------+    +-----------------+
+|     DimItem     |    |     DimTime     |
++-----------------+    +-----------------+
+| Item_Key (PK)   |    | Time_Key (PK)   |
+| ItemName        |    | Date            |
+| Category        |    | DayOfWeek       |
+| SubCategory     |    | Month           |
+| Brand           |    | Quarter         |
+| SupplierName    |    | Year            |
++-----------------+    | IsWeekend       |
+                       +-----------------+
+```
+
+---
+
+### 3. Steps Involved in Data Mining when Viewed as a Process of Knowledge Discovery
+
+Data mining is often viewed as a crucial step in the broader process of Knowledge Discovery in Databases (KDD). The KDD process is an iterative and interactive one, involving multiple steps to transform raw data into understandable and valuable knowledge.
+
+The typical steps involved in Data Mining as part of the KDD process are:
+
+1.  **Data Cleaning:**
+    *   **Objective:** To remove noisy data, irrelevant data, and handle missing values. Data from real-world sources is often incomplete, noisy, and inconsistent.
+    *   **Activities:** Filling in missing values (e.g., by mean, median, mode, or prediction), smoothing noisy data (e.g., binning, regression), identifying and removing outliers, and resolving inconsistencies.
+
+2.  **Data Integration:**
+    *   **Objective:** To combine data from multiple, heterogeneous data sources into a coherent data store (e.g., a data warehouse).
+    *   **Activities:** Schema integration (resolving naming conflicts, entity identification), handling redundant data, and detecting and resolving data value conflicts (e.g., ensuring consistent units of measurement).
+
+3.  **Data Selection:**
+    *   **Objective:** To retrieve data relevant to the analysis task from the database. This may involve selecting specific data attributes or subsets of data records.
+    *   **Activities:** Querying databases, selecting specific tables or columns, and sampling data if the dataset is too large.
+
+4.  **Data Transformation (Data Preprocessing):**
+    *   **Objective:** To transform and consolidate data into forms appropriate for mining. Data is converted into a format suitable for the chosen data mining algorithm.
+    *   **Activities:**
+        *   **Normalization:** Scaling data to a specific range (e.g., 0-1 or z-score).
+        *   **Aggregation:** Summarizing data (e.g., total sales per month).
+        *   **Generalization:** Replacing low-level data with higher-level concepts (e.g., age values into age ranges).
+        *   **Attribute Construction (Feature Engineering):** Creating new attributes from existing ones that might be more useful for the mining process.
+
+5.  **Data Mining:**
+    *   **Objective:** To apply intelligent methods to extract patterns from the preprocessed data. This is the core step where algorithms are used.
+    *   **Activities:** Applying various data mining techniques such as classification (e.g., decision trees, neural networks), clustering (e.g., K-means, hierarchical), association rule mining (e.g., Apriori), and regression analysis.
+
+6.  **Pattern Evaluation:**
+    *   **Objective:** To identify truly interesting patterns representing knowledge based on some interestingness measures. Not all patterns found by data mining are equally useful or meaningful.
+    *   **Activities:** Using objective measures (e.g., support, confidence for association rules, accuracy for classification) and subjective measures (e.g., understandability, novelty, usefulness) to filter and evaluate patterns.
+
+7.  **Knowledge Presentation (Visualization):**
+    *   **Objective:** To present the discovered knowledge to the user in an understandable and usable format.
+    *   **Activities:** Visualizing discovered patterns and rules (e.g., graphs, charts, decision trees), generating reports, and documenting the findings. This step allows users to interpret the knowledge and make informed decisions.
+
+---
+
+### 4. Explain Different Steps Involved in Data Preprocessing.
+
+Data preprocessing is a crucial phase in the KDD process, particularly within the Data Transformation step, aimed at preparing raw data for effective analysis and mining. Real-world data is often "dirty" – incomplete, noisy, inconsistent, and highly redundant – making preprocessing essential for improving data quality and, consequently, the quality of mining results.
+
+The main steps involved in data preprocessing are:
+
+1.  **Data Cleaning:**
+    *   **Purpose:** To handle missing values, smooth noisy data, identify or remove outliers, and resolve inconsistencies.
+    *   **Techniques:**
+        *   **Handling Missing Values:**
+            *   **Ignore the tuple:** Suitable for large datasets where missing values are few.
+            *   **Fill manually:** Feasible for small datasets, but time-consuming.
+            *   **Fill with a global constant:** Replace all missing values with a fixed value (e.g., "Unknown").
+            *   **Fill with the attribute's mean or median:** Simple and effective for numerical data.
+            *   **Fill with the attribute's mean or median for the same class/category:** More sophisticated, considering data distribution.
+            *   **Fill with the most probable value:** Using regression, decision trees, or Bayesian inference to predict the missing value.
+        *   **Handling Noisy Data:** Noise refers to random error or variance in a measured variable.
+            *   **Binning:** Sorting data and then distributing values into "bins." Can smooth data by replacing all values in a bin with the bin's mean, median, or boundary values.
+            *   **Regression:** Using a regression function to smooth data.
+            *   **Clustering:** Grouping similar values together; outliers may fall outside clusters.
+            *   **Outlier Analysis:** Identifying data points that are significantly different from the majority of the data. These can be errors or genuinely unusual observations.
+        *   **Handling Inconsistent Data:** Correcting discrepancies in data values or coding, often by applying domain-specific rules or manual inspection.
+
+2.  **Data Integration:**
+    *   **Purpose:** To combine data from multiple heterogeneous sources into a coherent data store.
+    *   **Challenges and Techniques:**
+        *   **Schema Integration:** Resolving semantic heterogeneity (e.g., naming conflicts, different data types for the same entity).
+        *   **Redundancy Detection and Resolution:** Identifying and removing duplicate data, ensuring that the same information is not stored multiple times. Correlation analysis can help detect redundant attributes.
+        *   **Data Value Conflict Detection and Resolution:** Handling discrepancies in values for the same real-world entity (e.g., different units of measurement for weight).
+
+3.  **Data Transformation:**
+    *   **Purpose:** To convert data into forms appropriate for mining by changing values or structures.
+    *   **Techniques:**
+        *   **Normalization:** Scaling all data values to fall within a specified range.
+            *   **Min-max normalization:** Rescaling values to a range [0, 1] or [-1, 1].
+            *   **Z-score normalization (zero-mean normalization):** Scaling values based on the mean and standard deviation.
+            *   **Decimal scaling:** Moving the decimal point to normalize values.
+        *   **Aggregation:** Summarizing or combining data (e.g., sales data aggregated from daily to monthly totals).
+        *   **Generalization (Concept Hierarchy Generation):** Replacing low-level data with higher-level concepts using concept hierarchies (e.g., replacing city with country, or age with age range).
+        *   **Attribute Construction (Feature Engineering):** Creating new attributes (features) from existing ones that can provide more predictive power or better insights (e.g., creating "Age_Group" from "Age", or "Profit_Margin" from "Sales_Price" and "Cost_Price").
+
+4.  **Data Reduction:**
+    *   **Purpose:** To obtain a reduced representation of the data set that is much smaller in volume but produces the same (or almost the same) analytical results. This helps in improving storage, reducing I/O, and speeding up mining.
+    *   **Techniques:**
+        *   **Dimensionality Reduction:** Reducing the number of attributes.
+            *   **Feature Selection:** Identifying and removing irrelevant or redundant attributes (e.g., using correlation analysis, decision trees).
+            *   **Feature Extraction/Transformation:** Creating new, fewer dimensions that represent the original data (e.g., Principal Component Analysis - PCA, Singular Value Decomposition - SVD).
+        *   **Numerosity Reduction:** Reducing the number of data tuples.
+            *   **Parametric Methods:** Assuming a model for the data and storing only the model parameters (e.g., regression, log-linear models).
+            *   **Non-parametric Methods:**
+                *   **Histograms:** Summarizing data distributions.
+                *   **Clustering:** Grouping similar data objects into clusters, then using cluster representatives.
+                *   **Sampling:** Selecting a representative subset of the data.
+                *   **Data Cube Aggregation:** Storing pre-computed aggregate data from data cubes.
+        *   **Data Compression:** Encoding data to reduce its size (e.g., lossless or lossy compression).
+
+---
+
+### 5. K-Means Algorithm for Clustering
+
+**Given Data Points:**
+A1(2,10), A2(2,5), A3(8,4), B1(5,8), B2(7,5), B3(6,4), C1(1,2), C2(4,9)
+
+**Number of Clusters (k):** 3
+
+**Distance Function:** Euclidean distance: $d(p, q) = \sqrt{(p_x - q_x)^2 + (p_y - q_y)^2}$
+
+**Initial Centroids:**
+*   $M_1 = A1(2,10)$
+*   $M_2 = B1(5,8)$
+*   $M_3 = C1(1,2)$
+
+---
+
+**Detailed Steps of K-Means Algorithm:**
+
+**Iteration 1:**
+
+**Step 1.1: Assign each point to the closest centroid.**
+Calculate Euclidean distance from each data point to each initial centroid.
+
+*   **To $M_1 (2,10)$:**
+    *   A1(2,10): $\sqrt{(2-2)^2 + (10-10)^2} = 0$
+    *   A2(2,5): $\sqrt{(2-2)^2 + (5-10)^2} = 5$
+    *   A3(8,4): $\sqrt{(8-2)^2 + (4-10)^2} = \sqrt{36+36} = \sqrt{72} \approx 8.49$
+    *   B1(5,8): $\sqrt{(5-2)^2 + (8-10)^2} = \sqrt{9+4} = \sqrt{13} \approx 3.61$
+    *   B2(7,5): $\sqrt{(7-2)^2 + (5-10)^2} = \sqrt{25+25} = \sqrt{50} \approx 7.07$
+    *   B3(6,4): $\sqrt{(6-2)^2 + (4-10)^2} = \sqrt{16+36} = \sqrt{52} \approx 7.21$
+    *   C1(1,2): $\sqrt{(1-2)^2 + (2-10)^2} = \sqrt{1+64} = \sqrt{65} \approx 8.06$
+    *   C2(4,9): $\sqrt{(4-2)^2 + (9-10)^2} = \sqrt{4+1} = \sqrt{5} \approx 2.24$
+
+*   **To $M_2 (5,8)$:**
+    *   A1(2,10): $\sqrt{(2-5)^2 + (10-8)^2} = \sqrt{9+4} = \sqrt{13} \approx 3.61$
+    *   A2(2,5): $\sqrt{(2-5)^2 + (5-8)^2} = \sqrt{9+9} = \sqrt{18} \approx 4.24$
+    *   A3(8,4): $\sqrt{(8-5)^2 + (4-8)^2} = \sqrt{9+16} = \sqrt{25} = 5$
+    *   B1(5,8): $\sqrt{(5-5)^2 + (8-8)^2} = 0$
+    *   B2(7,5): $\sqrt{(7-5)^2 + (5-8)^2} = \sqrt{4+9} = \sqrt{13} \approx 3.61$
+    *   B3(6,4): $\sqrt{(6-5)^2 + (4-8)^2} = \sqrt{1+16} = \sqrt{17} \approx 4.12$
+    *   C1(1,2): $\sqrt{(1-5)^2 + (2-8)^2} = \sqrt{16+36} = \sqrt{52} \approx 7.21$
+    *   C2(4,9): $\sqrt{(4-5)^2 + (9-8)^2} = \sqrt{1+1} = \sqrt{2} \approx 1.41$
+
+*   **To $M_3 (1,2)$:**
+    *   A1(2,10): $\sqrt{(2-1)^2 + (10-2)^2} = \sqrt{1+64} = \sqrt{65} \approx 8.06$
+    *   A2(2,5): $\sqrt{(2-1)^2 + (5-2)^2} = \sqrt{1+9} = \sqrt{10} \approx 3.16$
+    *   A3(8,4): $\sqrt{(8-1)^2 + (4-2)^2} = \sqrt{49+4} = \sqrt{53} \approx 7.28$
+    *   B1(5,8): $\sqrt{(5-1)^2 + (8-2)^2} = \sqrt{16+36} = \sqrt{52} \approx 7.21$
+    *   B2(7,5): $\sqrt{(7-1)^2 + (5-2)^2} = \sqrt{36+9} = \sqrt{45} \approx 6.71$
+    *   B3(6,4): $\sqrt{(6-1)^2 + (4-2)^2} = \sqrt{25+4} = \sqrt{29} \approx 5.39$
+    *   C1(1,2): $\sqrt{(1-1)^2 + (2-2)^2} = 0$
+    *   C2(4,9): $\sqrt{(4-1)^2 + (9-2)^2} = \sqrt{9+49} = \sqrt{58} \approx 7.62$
+
+**Assignments after Step 1.1:**
+
+| Point | $d(., M_1)$ | $d(., M_2)$ | $d(., M_3)$ | Assigned Cluster |
+| :---- | :---------- | :---------- | :---------- | :--------------- |
+| A1    | **0**       | 3.61        | 8.06        | C1               |
+| A2    | 5           | 4.24        | **3.16**    | C3               |
+| A3    | 8.49        | **5**       | 7.28        | C2               |
+| B1    | 3.61        | **0**       | 7.21        | C2               |
+| B2    | 7.07        | **3.61**    | 6.71        | C2               |
+| B3    | 7.21        | **4.12**    | 5.39        | C2               |
+| C1    | 8.06        | 7.21        | **0**       | C3               |
+| C2    | 2.24        | **1.41**    | 7.62        | C2               |
+
+**Clusters after first assignment:**
+*   **Cluster 1 (C1):** {A1(2,10)}
+*   **Cluster 2 (C2):** {A3(8,4), B1(5,8), B2(7,5), B3(6,4), C2(4,9)}
+*   **Cluster 3 (C3):** {A2(2,5), C1(1,2)}
+
+**Step 1.2: Recalculate new centroids (mean of points in each cluster).**
+
+*   **New $M_1$ (for C1):** $(\frac{2}{1}, \frac{10}{1}) = \mathbf{(2, 10)}$
+*   **New $M_2$ (for C2):** $(\frac{8+5+7+6+4}{5}, \frac{4+8+5+4+9}{5}) = (\frac{30}{5}, \frac{30}{5}) = \mathbf{(6, 6)}$
+*   **New $M_3$ (for C3):** $(\frac{2+1}{2}, \frac{5+2}{2}) = (\frac{3}{2}, \frac{7}{2}) = \mathbf{(1.5, 3.5)}$
+
+---
+
+**a) The three cluster centers after the first round of execution:**
+*   **Cluster 1 Center:** (2, 10)
+*   **Cluster 2 Center:** (6, 6)
+*   **Cluster 3 Center:** (1.5, 3.5)
+
+---
+
+**Iteration 2:**
+
+**Step 2.1: Assign each point to the closest new centroid.**
+New Centroids: $M_1(2,10)$, $M_2(6,6)$, $M_3(1.5,3.5)$
+
+*   **To $M_1 (2,10)$:**
+    *   A1(2,10): 0
+    *   A2(2,5): 5
+    *   A3(8,4): 8.49
+    *   B1(5,8): 3.61
+    *   B2(7,5): 7.07
+    *   B3(6,4): 7.21
+    *   C1(1,2): 8.06
+    *   C2(4,9): 2.24
+
+*   **To $M_2 (6,6)$:**
+    *   A1(2,10): $\sqrt{(2-6)^2 + (10-6)^2} = \sqrt{16+16} = \sqrt{32} \approx 5.66$
+    *   A2(2,5): $\sqrt{(2-6)^2 + (5-6)^2} = \sqrt{16+1} = \sqrt{17} \approx 4.12$
+    *   A3(8,4): $\sqrt{(8-6)^2 + (4-6)^2} = \sqrt{4+4} = \sqrt{8} \approx 2.83$
+    *   B1(5,8): $\sqrt{(5-6)^2 + (8-6)^2} = \sqrt{1+4} = \sqrt{5} \approx 2.24$
+    *   B2(7,5): $\sqrt{(7-6)^2 + (5-6)^2} = \sqrt{1+1} = \sqrt{2} \approx 1.41$
+    *   B3(6,4): $\sqrt{(6-6)^2 + (4-6)^2} = \sqrt{0+4} = \sqrt{4} = 2$
+    *   C1(1,2): $\sqrt{(1-6)^2 + (2-6)^2} = \sqrt{25+16} = \sqrt{41} \approx 6.40$
+    *   C2(4,9): $\sqrt{(4-6)^2 + (9-6)^2} = \sqrt{4+9} = \sqrt{13} \approx 3.61$
+
+*   **To $M_3 (1.5,3.5)$:**
+    *   A1(2,10): $\sqrt{(2-1.5)^2 + (10-3.5)^2} = \sqrt{0.25+42.25} = \sqrt{42.5} \approx 6.52$
+    *   A2(2,5): $\sqrt{(2-1.5)^2 + (5-3.5)^2} = \sqrt{0.25+2.25} = \sqrt{2.5} \approx 1.58$
+    *   A3(8,4): $\sqrt{(8-1.5)^2 + (4-3.5)^2} = \sqrt{42.25+0.25} = \sqrt{42.5} \approx 6.52$
+    *   B1(5,8): $\sqrt{(5-1.5)^2 + (8-3.5)^2} = \sqrt{12.25+20.25} = \sqrt{32.5} \approx 5.70$
+    *   B2(7,5): $\sqrt{(7-1.5)^2 + (5-3.5)^2} = \sqrt{30.25+2.25} = \sqrt{32.5} \approx 5.70$
+    *   B3(6,4): $\sqrt{(6-1.5)^2 + (4-3.5)^2} = \sqrt{20.25+0.25} = \sqrt{20.5} \approx 4.53$
+    *   C1(1,2): $\sqrt{(1-1.5)^2 + (2-3.5)^2} = \sqrt{0.25+2.25} = \sqrt{2.5} \approx 1.58$
+    *   C2(4,9): $\sqrt{(4-1.5)^2 + (9-3.5)^2} = \sqrt{6.25+30.25} = \sqrt{36.5} \approx 6.04$
+
+**Assignments after Step 2.1:**
+
+| Point | $d(., M_1)$ | $d(., M_2)$ | $d(., M_3)$ | Assigned Cluster | Previous Cluster | Changed? |
+| :---- | :---------- | :---------- | :---------- | :--------------- | :--------------- | :------- |
+| A1    | **0**       | 5.66        | 6.52        | C1               | C1               | No       |
+| A2    | 5           | 4.12        | **1.58**    | C3               | C3               | No       |
+| A3    | 8.49        | **2.83**    | 6.52        | C2               | C2               | No       |
+| B1    | 3.61        | **2.24**    | 5.70        | C2               | C2               | No       |
+| B2    | 7.07        | **1.41**    | 5.70        | C2               | C2               | No       |
+| B3    | 7.21        | **2**       | 4.53        | C2               | C2               | No       |
+| C1    | 8.06        | 6.40        | **1.58**    | C3               | C3               | No       |
+| C2    | **2.24**    | 3.61        | 6.04        | C1               | C2               | **Yes**  |
+
+**Clusters after second assignment:**
+*   **Cluster 1 (C1):** {A1(2,10), C2(4,9)}
+*   **Cluster 2 (C2):** {A3(8,4), B1(5,8), B2(7,5), B3(6,4)}
+*   **Cluster 3 (C3):** {A2(2,5), C1(1,2)}
+
+**Step 2.2: Recalculate new centroids.**
+
+*   **New $M_1$ (for C1):** $(\frac{2+4}{2}, \frac{10+9}{2}) = (\frac{6}{2}, \frac{19}{2}) = \mathbf{(3, 9.5)}$
+*   **New $M_2$ (for C2):** $(\frac{8+5+7+6}{4}, \frac{4+8+5+4}{4}) = (\frac{26}{4}, \frac{21}{4}) = \mathbf{(6.5, 5.25)}$
+*   **New $M_3$ (for C3):** $(\frac{2+1}{2}, \frac{5+2}{2}) = (\frac{3}{2}, \frac{7}{2}) = \mathbf{(1.5, 3.5)}$ (No change for $M_3$)
+
+---
+
+**Iteration 3:**
+
+**Step 3.1: Assign each point to the closest new centroid.**
+New Centroids: $M_1(3,9.5)$, $M_2(6.5,5.25)$, $M_3(1.5,3.5)$
+
+*   **To $M_1 (3,9.5)$:**
+    *   A1(2,10): $\sqrt{(2-3)^2 + (10-9.5)^2} = \sqrt{1+0.25} = \sqrt{1.25} \approx 1.12$
+    *   A2(2,5): $\sqrt{(2-3)^2 + (5-9.5)^2} = \sqrt{1+20.25} = \sqrt{21.25} \approx 4.61$
+    *   A3(8,4): $\sqrt{(8-3)^2 + (4-9.5)^2} = \sqrt{25+30.25} = \sqrt{55.25} \approx 7.43$
+    *   B1(5,8): $\sqrt{(5-3)^2 + (8-9.5)^2} = \sqrt{4+2.25} = \sqrt{6.25} = 2.5$
+    *   B2(7,5): $\sqrt{(7-3)^2 + (5-9.5)^2} = \sqrt{16+20.25} = \sqrt{36.25} \approx 6.02$
+    *   B3(6,4): $\sqrt{(6-3)^2 + (4-9.5)^2} = \sqrt{9+30.25} = \sqrt{39.25} \approx 6.26$
+    *   C1(1,2): $\sqrt{(1-3)^2 + (2-9.5)^2} = \sqrt{4+56.25} = \sqrt{60.25} \approx 7.76$
+    *   C2(4,9): $\sqrt{(4-3)^2 + (9-9.5)^2} = \sqrt{1+0.25} = \sqrt{1.25} \approx 1.12$
+
+*   **To $M_2 (6.5,5.25)$:**
+    *   A1(2,10): $\sqrt{(2-6.5)^2 + (10-5.25)^2} = \sqrt{20.25+22.56} = \sqrt{42.81} \approx 6.54$
+    *   A2(2,5): $\sqrt{(2-6.5)^2 + (5-5.25)^2} = \sqrt{20.25+0.0625} = \sqrt{20.3125} \approx 4.51$
+    *   A3(8,4): $\sqrt{(8-6.5)^2 + (4-5.25)^2} = \sqrt{2.25+1.5625} = \sqrt{3.8125} \approx 1.95$
+    *   B1(5,8): $\sqrt{(5-6.5)^2 + (8-5.25)^2} = \sqrt{2.25+7.5625} = \sqrt{9.8125} \approx 3.13$
+    *   B2(7,5): $\sqrt{(7-6.5)^2 + (5-5.25)^2} = \sqrt{0.25+0.0625} = \sqrt{0.3125} \approx 0.56$
+    *   B3(6,4): $\sqrt{(6-6.5)^2 + (4-5.25)^2} = \sqrt{0.25+1.5625} = \sqrt{1.8125} \approx 1.35$
+    *   C1(1,2): $\sqrt{(1-6.5)^2 + (2-5.25)^2} = \sqrt{30.25+10.5625} = \sqrt{40.8125} \approx 6.39$
+    *   C2(4,9): $\sqrt{(4-6.5)^2 + (9-5.25)^2} = \sqrt{6.25+14.0625} = \sqrt{20.3125} \approx 4.51$
+
+*   **To $M_3 (1.5,3.5)$:**
+    *   A1(2,10): $\sqrt{(2-1.5)^2 + (10-3.5)^2} = \sqrt{0.25+42.25} = \sqrt{42.5} \approx 6.52$
+    *   A2(2,5): $\sqrt{(2-1.5)^2 + (5-3.5)^2} = \sqrt{0.25+2.25} = \sqrt{2.5} \approx 1.58$
+    *   A3(8,4): $\sqrt{(8-1.5)^2 + (4-3.5)^2} = \sqrt{42.25+0.25} = \sqrt{42.5} \approx 6.52$
+    *   B1(5,8): $\sqrt{(5-1.5)^2 + (8-3.5)^2} = \sqrt{12.25+20.25} = \sqrt{32.5} \approx 5.70$
+    *   B2(7,5): $\sqrt{(7-1.5)^2 + (5-3.5)^2} = \sqrt{30.25+2.25} = \sqrt{32.5} \approx 5.70$
+    *   B3(6,4): $\sqrt{(6-1.5)^2 + (4-3.5)^2} = \sqrt{20.25+0.25} = \sqrt{20.5} \approx 4.53$
+    *   C1(1,2): $\sqrt{(1-1.5)^2 + (2-3.5)^2} = \sqrt{0.25+2.25} = \sqrt{2.5} \approx 1.58$
+    *   C2(4,9): $\sqrt{(4-1.5)^2 + (9-3.5)^2} = \sqrt{6.25+30.25} = \sqrt{36.5} \approx 6.04$
+
+**Assignments after Step 3.1:**
+
+| Point | $d(., M_1)$ | $d(., M_2)$ | $d(., M_3)$ | Assigned Cluster | Previous Cluster | Changed? |
+| :---- | :---------- | :---------- | :---------- | :--------------- | :--------------- | :------- |
+| A1    | **1.12**    | 6.54        | 6.52        | C1               | C1               | No       |
+| A2    | 4.61        | 4.51        | **1.58**    | C3               | C3               | No       |
+| A3    | 7.43        | **1.95**    | 6.52        | C2               | C2               | No       |
+| B1    | **2.5**     | 3.13        | 5.70        | C1               | C2               | **Yes**  |
+| B2    | 6.02        | **0.56**    | 5.70        | C2               | C2               | No       |
+| B3    | 6.26        | **1.35**    | 4.53        | C2               | C2               | No       |
+| C1    | 7.76        | 6.39        | **1.58**    | C3               | C3               | No       |
+| C2    | **1.12**    | 4.51        | 6.04        | C1               | C1               | No       |
+
+**Clusters after third assignment:**
+*   **Cluster 1 (C1):** {A1(2,10), B1(5,8), C2(4,9)}
+*   **Cluster 2 (C2):** {A3(8,4), B2(7,5), B3(6,4)}
+*   **Cluster 3 (C3):** {A2(2,5), C1(1,2)}
+
+**Step 3.2: Recalculate new centroids.**
+
+*   **New $M_1$ (for C1):** $(\frac{2+5+4}{3}, \frac{10+8+9}{3}) = (\frac{11}{3}, \frac{27}{3}) = \mathbf{(3.67, 9)}$ (approx.)
+*   **New $M_2$ (for C2):** $(\frac{8+7+6}{3}, \frac{4+5+4}{3}) = (\frac{21}{3}, \frac{13}{3}) = \mathbf{(7, 4.33)}$ (approx.)
+*   **New $M_3$ (for C3):** $(\frac{2+1}{2}, \frac{5+2}{2}) = (\frac{3}{2}, \frac{7}{2}) = \mathbf{(1.5, 3.5)}$ (No change for $M_3$)
+
+---
+
+**Iteration 4:**
+
+**Step 4.1: Assign each point to the closest new centroid.**
+New Centroids: $M_1(3.67,9)$, $M_2(7,4.33)$, $M_3(1.5,3.5)$
+
+(Detailed distance calculations are omitted for brevity, as the centroids are converging. We just need to check assignments.)
+
+*   A1(2,10) is closest to $M_1(3.67,9)$.
+*   A2(2,5) is closest to $M_3(1.5,3.5)$.
+*   A3(8,4) is closest to $M_2(7,4.33)$.
+*   B1(5,8) is closest to $M_1(3.67,9)$.
+*   B2(7,5) is closest to $M_2(7,4.33)$.
+*   B3(6,4) is closest to $M_2(7,4.33)$.
+*   C1(1,2) is closest to $M_3(1.5,3.5)$.
+*   C2(4,9) is closest to $M_1(3.67,9)$.
+
+**Assignments after fourth assignment:**
+*   **Cluster 1 (C1):** {A1(2,10), B1(5,8), C2(4,9)}
+*   **Cluster 2 (C2):** {A3(8,4), B2(7,5), B3(6,4)}
+*   **Cluster 3 (C3):** {A2(2,5), C1(1,2)}
+
+**Step 4.2: Recalculate new centroids.**
+
+*   **New $M_1$ (for C1):** $(\frac{2+5+4}{3}, \frac{10+8+9}{3}) = (\frac{11}{3}, \frac{27}{3}) = \mathbf{(3.67, 9)}$
+*   **New $M_2$ (for C2):** $(\frac{8+7+6}{3}, \frac{4+5+4}{3}) = (\frac{21}{3}, \frac{13}{3}) = \mathbf{(7, 4.33)}$
+*   **New $M_3$ (for C3):** $(\frac{2+1}{2}, \frac{5+2}{2}) = (\frac{3}{2}, \frac{7}{2}) = \mathbf{(1.5, 3.5)}$
+
+Since the cluster assignments and centroids did not change from Iteration 3 to Iteration 4, the algorithm has converged.
+
+---
+
+**b) The final three clusters:**
+
+*   **Cluster 1:** {A1(2,10), B1(5,8), C2(4,9)}
+*   **Cluster 2:** {A3(8,4), B2(7,5), B3(6,4)}
+*   **Cluster 3:** {A2(2,5), C1(1,2)}

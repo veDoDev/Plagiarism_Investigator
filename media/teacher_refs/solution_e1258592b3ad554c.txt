@@ -1,0 +1,437 @@
+Here are detailed, step-by-step explanations for the given assignment questions, designed to be clear, correct, concise, academic, and well-structured.
+
+---
+
+## 1. Addressing Modes in the TCP/IP Model (CO1)
+
+Addressing in the TCP/IP model is fundamental for identifying devices, networks, and services across various layers, enabling communication from a specific application on one host to an application on another. The primary addressing modes are categorized by the layer at which they operate:
+
+### 1.1. Physical Addressing (Data Link Layer - Layer 2)
+**Name:** MAC Address (Media Access Control Address) or Hardware Address.
+**Purpose:** To uniquely identify a network interface card (NIC) within a local area network (LAN) segment. It is used for frame delivery between devices on the same physical link.
+**Characteristics:**
+*   **Format:** Typically a 48-bit (6-byte) hexadecimal number, often written as six pairs of hexadecimal digits separated by colons or hyphens (e.g., `00:1A:2B:3C:4D:5E`).
+*   **Uniqueness:** Globally unique, assigned by the manufacturer (burned into the NIC). The first 24 bits usually identify the manufacturer (Organizationally Unique Identifier - OUI), and the last 24 bits are a unique serial number for that device.
+*   **Scope:** Local. MAC addresses are only relevant within a broadcast domain (e.g., a single Ethernet segment or Wi-Fi network). Routers do not forward frames based on MAC addresses across different networks.
+**Addressing Types at Layer 2:**
+*   **Unicast:** A frame is sent from one NIC to another specific NIC (e.g., `00:1A:2B:3C:4D:5E`).
+*   **Broadcast:** A frame is sent to all devices on the local segment (e.g., `FF:FF:FF:FF:FF:FF`).
+*   **Multicast:** A frame is sent to a specific group of devices on the local segment.
+
+### 1.2. Logical Addressing (Network Layer - Layer 3)
+**Name:** IP Address (Internet Protocol Address).
+**Purpose:** To uniquely identify a device within a larger, interconnected network (the internet). It is hierarchical and routable, used for packet delivery across different networks.
+**Characteristics:**
+*   **Hierarchical:** Consists of a network part and a host part, allowing routers to efficiently forward packets based on network prefixes.
+*   **Routable:** Routers use IP addresses to determine the optimal path for packets to reach their destination across multiple network segments.
+*   **Scope:** Global (public IP addresses) or Local (private IP addresses within an organization).
+
+#### 1.2.1. IPv4 Addressing
+**Format:** A 32-bit number, typically represented in "dotted-decimal" notation (e.g., `192.168.1.1`).
+**Addressing Types at Layer 3 (IPv4):**
+*   **Unicast:** A packet is sent from one source host to a single specific destination host. This is the most common form of IP communication.
+    *   *Example:* A web browser requesting a page from a web server.
+*   **Broadcast:** A packet is sent from one host to all hosts within a specific subnet.
+    *   *Example:* ARP requests, DHCP discovery requests.
+    *   **Directed Broadcast:** Sent to a specific network's broadcast address (e.g., `192.168.1.255` for network `192.168.1.0/24`).
+    *   **Limited Broadcast:** Sent to `255.255.255.255`, which is received by all hosts on the local network.
+*   **Multicast:** A packet is sent from one host to a selected group of hosts that have joined a specific multicast group. This is efficient for streaming media or online gaming.
+    *   *Example:* Live video conferencing, online gaming.
+    *   IPv4 multicast addresses range from `224.0.0.0` to `239.255.255.255`.
+
+#### 1.2.2. IPv6 Addressing
+**Format:** A 128-bit number, typically represented in "hexadecimal colon-separated" notation (e.g., `2001:0db8:85a3:0000:0000:8a2e:0370:7334`).
+**Addressing Types at Layer 3 (IPv6):**
+*   **Unicast:** A packet is sent from a single source host to a single specific destination host.
+*   **Multicast:** A packet is sent from one host to a selected group of hosts that have joined a specific multicast group, similar to IPv4 multicast but with more structured addressing.
+    *   IPv6 multicast addresses begin with `FF00::/8`.
+*   **Anycast:** A packet is sent from one host to *any one* of a group of hosts identified by the same anycast address. Typically, the packet is delivered to the topologically closest host in the group.
+    *   *Example:* Used for DNS root servers or content delivery networks (CDNs).
+
+### 1.3. Port Addressing (Transport Layer - Layer 4)
+**Name:** Port Number.
+**Purpose:** To identify specific applications or services running on a host. While the IP address directs a packet to a specific host, the port number directs it to the correct process on that host.
+**Characteristics:**
+*   **Format:** A 16-bit number, ranging from 0 to 65535.
+*   **Protocol-Specific:** Port numbers are used in conjunction with a transport layer protocol (TCP or UDP).
+**Categories of Port Numbers:**
+*   **Well-known Ports (0-1023):** Reserved for common services (e.g., HTTP uses port 80, HTTPS uses 443, FTP uses 20/21, SSH uses 22, DNS uses 53).
+*   **Registered Ports (1024-49151):** Can be registered by organizations for specific applications.
+*   **Dynamic/Private Ports (49152-65535):** Used by client applications when initiating connections, or for ephemeral connections.
+
+### 1.4. Relationship Between Addressing Modes
+These addressing modes work together in a hierarchical manner:
+*   A user wants to access a website (e.g., `www.example.com`).
+*   **DNS** (application layer) resolves `www.example.com` to an **IP address** (e.g., `93.184.216.34`).
+*   The client's operating system decides to use **HTTP** (application layer) on **port 80** (transport layer).
+*   The **IP packet** (network layer) containing the request is addressed to `93.184.216.34` on port `80`.
+*   To send this packet over the local network, the client's device uses **ARP** (Address Resolution Protocol) to find the **MAC address** (data link layer) of the default gateway (router) or the destination host if it's on the same subnet.
+*   The **Ethernet frame** (data link layer) carries the IP packet, addressed to the gateway's MAC address.
+*   This layered addressing ensures that data reaches the correct physical device, then the correct logical device on the internet, and finally the correct application on that device.
+
+---
+
+## 2. Guided Transmission Media (CO1)
+
+Guided transmission media, also known as wired media, are physical links that confine and guide electromagnetic waves along a specific path. They offer high data transfer rates and better security compared to unguided media. The three primary types are:
+
+### 2.1. Twisted-Pair Cable
+
+**Description:** This medium consists of two insulated copper wires twisted together. The twisting helps to reduce electromagnetic interference (EMI) from external sources and crosstalk (interference between adjacent pairs) by canceling out induced currents.
+**Components:**
+*   **Copper Conductors:** Two or more insulated copper wires.
+*   **Insulation:** Protects individual wires.
+*   **Outer Jacket:** Provides overall protection and insulation.
+**Types:**
+*   **Unshielded Twisted Pair (UTP):**
+    *   **Description:** The most common type, without any metallic shield around the twisted pairs. It relies solely on the cancellation effect for noise reduction.
+    *   **Characteristics:** Relatively inexpensive, easy to install, flexible.
+    *   **Categories:** Classified by their data rates and frequency support (e.g., Cat3 for telephony, Cat5e for Gigabit Ethernet, Cat6/6a for higher speeds).
+    *   **Applications:** Ethernet LANs (e.g., 100BASE-TX, 1000BASE-T), telephone systems.
+*   **Shielded Twisted Pair (STP):**
+    *   **Description:** Contains a metal foil or braided mesh shield wrapped around individual pairs, or around the entire bundle of pairs, in addition to the twisting. This shield provides extra protection against EMI and crosstalk.
+    *   **Characteristics:** Better performance in noisy environments, higher cost, thicker, harder to install than UTP, requires proper grounding.
+    *   **Applications:** Industrial environments, high-performance data networks where EMI is a concern.
+
+**Advantages:**
+*   Relatively inexpensive (especially UTP).
+*   Easy to install and maintain (UTP).
+*   Widely available.
+**Disadvantages:**
+*   Susceptible to EMI (UTP).
+*   Limited bandwidth and distance compared to fiber optic.
+*   Lower security (easy to tap).
+
+### 2.2. Coaxial Cable
+
+**Description:** A cable with a central copper conductor surrounded by an insulating layer, which is then encased by a braided metal shield and finally covered by an outer insulating jacket. This concentric design provides excellent shielding from EMI.
+**Components:**
+*   **Central Conductor:** Solid copper wire (transmits data).
+*   **Insulator:** Dielectric material (e.g., plastic) surrounding the central conductor.
+*   **Braided Metal Shield:** Woven copper mesh (ground, reduces EMI).
+*   **Outer Jacket:** Insulating protective layer.
+**Types (historically significant in networking):**
+*   **Thin Ethernet (10BASE2):** Thinner, more flexible, easier to install, but shorter segment lengths.
+*   **Thick Ethernet (10BASE5):** Thicker, less flexible, but supported longer segment lengths.
+**Applications:**
+*   Cable television (CATV) distribution.
+*   Earlier Ethernet networks (now largely replaced by twisted pair).
+*   Broadband internet connections (cable modems).
+*   Short-distance data and video transmission.
+
+**Advantages:**
+*   Better shielding and higher bandwidth than UTP (for its time).
+*   Less susceptible to EMI than UTP.
+*   Can support longer distances than UTP before amplification is needed.
+**Disadvantages:**
+*   More expensive and less flexible than UTP.
+*   More difficult to install than UTP.
+*   Limited bandwidth compared to fiber optic.
+
+### 2.3. Fiber Optic Cable
+
+**Description:** Transmits data in the form of light pulses through thin strands of glass or plastic (fibers). It operates on the principle of total internal reflection, where light signals bounce off the cladding and stay within the core.
+**Components:**
+*   **Core:** The innermost part, typically glass, through which light travels.
+*   **Cladding:** A glass layer surrounding the core with a lower refractive index, causing light to reflect back into the core.
+*   **Buffer/Coating:** A plastic layer that protects the fiber from moisture and physical damage.
+*   **Strength Members:** Kevlar or other materials to provide tensile strength.
+*   **Outer Jacket:** Overall protective sheath.
+**Types:**
+*   **Single-Mode Fiber (SMF):**
+    *   **Description:** Has a very narrow core (around 9 microns) that allows only a single path (mode) for light to travel.
+    *   **Characteristics:** Used for long-distance, high-bandwidth transmission, requires laser light sources.
+    *   **Applications:** Telecommunications backbones, long-haul data transmission (e.g., undersea cables), high-speed WANs.
+*   **Multi-Mode Fiber (MMF):**
+    *   **Description:** Has a wider core (50 to 62.5 microns) that allows multiple paths (modes) for light to travel. This can lead to modal dispersion (light signals arriving at slightly different times), limiting distance.
+    *   **Characteristics:** Used for shorter distances, typically with LED or VCSEL light sources.
+    *   **Applications:** LANs, campus networks, short-to-medium distance data centers.
+
+**Advantages:**
+*   **Extremely High Bandwidth:** Supports very high data rates over long distances.
+*   **Immunity to EMI:** Not affected by electromagnetic interference or electrical noise, as it transmits light.
+*   **Longer Distances:** Can transmit signals much further without regeneration than copper cables.
+*   **Security:** Very difficult to tap without detection, offering high security.
+*   **Lightweight and Small Size:** Lighter and thinner than copper cables for equivalent capacity.
+*   **Electrical Isolation:** No electrical current, preventing ground loops and hazards.
+**Disadvantages:**
+*   **Higher Cost:** More expensive to manufacture, install, and maintain.
+*   **Fragile:** Glass fibers are delicate and require careful handling.
+*   **Difficult to Install/Terminate:** Requires specialized tools and expertise for splicing and connecting.
+*   **Requires Optical Converters:** Needs optoelectronic devices to convert electrical signals to light and vice-versa.
+
+---
+
+## 3. Go-Back-N ARQ and Selective Repeat ARQ (CO2)
+
+Both Go-Back-N (GBN) ARQ and Selective Repeat (SR) ARQ are protocols used at the Data Link Layer or Transport Layer to ensure reliable data transfer over unreliable channels. They build upon the sliding window protocol, using sequence numbers, acknowledgements (ACKs), and timers to detect and recover from lost or corrupted frames.
+
+### 3.1. Go-Back-N (GBN) ARQ
+
+GBN ARQ is a form of sliding window protocol where the sender maintains a window of size $N$ frames that it can transmit without waiting for acknowledgements. However, the receiver only accepts frames in sequential order.
+
+#### 3.1.1. How Go-Back-N Works
+
+**Sender-Side Logic:**
+1.  **Window Management:** The sender maintains a sending window of size $N$. It can send up to $N$ frames without waiting for an ACK for the oldest frame in its window.
+2.  **Sequence Numbers:** Each frame is assigned a unique sequence number.
+3.  **Timer:** The sender maintains a single timer for the *oldest unacknowledged frame* in its window.
+4.  **Acknowledgement (ACK):**
+    *   ACks are **cumulative**. An ACK for frame `k` (ACK `k`) means that all frames up to and including `k-1` have been successfully received and delivered to the upper layer.
+    *   Upon receiving an ACK `k`, the sender slides its window forward, signifying that frames up to `k-1` are now acknowledged.
+5.  **Retransmission on Timeout:** If the timer for the oldest unacknowledged frame expires, the sender assumes that the frame (or its ACK) was lost. In this case, it **retransmits that frame and all subsequent frames** that were sent after it, effectively "going back N" (or rather, going back to the point of the lost frame).
+6.  **Retransmission on NAK (Optional but common):** Some implementations use Negative Acknowledgements (NAKs). If the receiver detects a missing frame (e.g., receives frame `5` when expecting `4`), it can send a NAK for frame `4`, prompting the sender to retransmit `4` and all subsequent frames.
+
+**Receiver-Side Logic:**
+1.  **Strict Ordering:** The receiver expects frames to arrive in strict sequential order. It maintains a variable, `expected_frame_number`.
+2.  **In-Order Reception:** If a frame with `expected_frame_number` arrives correctly, the receiver accepts it, delivers its data to the upper layer, updates `expected_frame_number`, and sends an ACK for `expected_frame_number`. This ACK is cumulative, indicating that all frames up to (but not including) the *new* `expected_frame_number` have been received.
+3.  **Out-of-Order Discard:** If a frame arrives with a sequence number *greater* than `expected_frame_number`, the receiver **discards it**. It does not buffer out-of-order frames. Instead, it re-sends the ACK for the last correctly received (in-order) frame, effectively telling the sender, "I'm still waiting for `expected_frame_number`."
+
+#### 3.1.2. Diagram illustrating Go-Back-N ARQ
+
+```
+Sender (Window Size N=3)                                  Receiver
+-----------------------                                  ------------
+
+1. Send Frame 0 [0] ----- Timer(0) ----->
+2. Send Frame 1 [1] ------------------->
+3. Send Frame 2 [2] ------------------->
+
+                                          <-- ACK 0 --- (Frame 0 received)
+                                              (Receiver expects Frame 1)
+                                          <-- ACK 0 --- (Frame 1 lost, out-of-order Frame 2 received, discarded, ACK 0 resent)
+                                              (Receiver still expects Frame 1)
+
+(Timer for Frame 0 expires, or NAK/Duplicate ACK 0 received)
+
+4. Retransmit Frame 0 [0] -- Timer(0) --> (Go back to 0)
+5. Retransmit Frame 1 [1] --------------->
+6. Retransmit Frame 2 [2] --------------->
+
+                                          <-- ACK 1 --- (Frame 0 received correctly)
+                                          <-- ACK 2 --- (Frame 1 received correctly)
+                                          <-- ACK 3 --- (Frame 2 received correctly)
+```
+**Explanation of Diagram:**
+*   Sender transmits frames 0, 1, 2.
+*   Frame 0 is ACKed.
+*   Frame 1 is lost.
+*   Frame 2 arrives out-of-order at the receiver. The receiver discards Frame 2 and resends ACK 0 (indicating it's still waiting for Frame 1).
+*   The sender's timer for Frame 0 (which is now effectively a timer for the oldest unacknowledged frame, which is Frame 1) expires.
+*   The sender retransmits Frame 0, Frame 1, and Frame 2.
+*   The receiver now receives Frame 0, then Frame 1, then Frame 2 in order, and sends cumulative ACKs (ACK 1, ACK 2, ACK 3).
+
+**Advantages:**
+*   Simpler receiver logic, as it doesn't need to buffer out-of-order frames.
+*   Requires less buffer space at the receiver.
+**Disadvantages:**
+*   Inefficient in high error rate environments because a single lost frame leads to the retransmission of many frames, even those that were correctly received.
+*   Wastes bandwidth due to unnecessary retransmissions.
+
+### 3.2. Selective Repeat (SR) ARQ
+
+Selective Repeat ARQ improves upon GBN by allowing the receiver to buffer out-of-order frames and requesting retransmission only for the missing frames.
+
+#### 3.2.1. How Selective Repeat Works
+
+**Sender-Side Logic:**
+1.  **Window Management:** The sender maintains a sending window of size $N$. It can transmit up to $N$ frames without waiting for ACKs.
+2.  **Sequence Numbers:** Each frame is assigned a unique sequence number.
+3.  **Individual Timers:** The sender maintains a **separate timer for each unacknowledged frame** in its window.
+4.  **Acknowledgement (ACK):**
+    *   ACks are **individual**. An ACK for frame `k` (ACK `k`) means only frame `k` has been successfully received.
+    *   Upon receiving ACK `k`, the sender marks frame `k` as acknowledged and cancels its timer.
+    *   If the first frame in the window is acknowledged, and there are subsequent acknowledged frames (due to selective ACKs), the window slides forward past all contiguous acknowledged frames.
+5.  **Retransmission on Timeout:** If the timer for a specific frame `k` expires, the sender assumes that frame `k` (or its ACK) was lost. It then **retransmits *only* that specific frame `k`**.
+
+**Receiver-Side Logic:**
+1.  **Buffering Out-of-Order Frames:** The receiver maintains a receiving window of size $N$ (typically $N/2$ to avoid ambiguities, where $N$ is the total sequence number space). It accepts and **buffers correctly received frames that fall within its receive window, even if they are out of order.**
+2.  **Individual Acknowledgement (ACK):** When a frame `k` is correctly received (whether in-order or out-of-order but within the window), the receiver sends an individual ACK `k` for that specific frame.
+3.  **Delivery to Upper Layer:** The receiver delivers data to the upper layer only when frames arrive in strict sequential order. If frames `k`, `k+1`, `k+2` are buffered and `k` is the next expected frame, all three are delivered to the upper layer, and the receive window slides forward by three.
+4.  **Discard/Ignore:** Frames outside the receive window are typically discarded.
+
+#### 3.2.2. Diagram illustrating Selective Repeat ARQ
+
+```
+Sender (Window Size N=3)                                  Receiver (Window Size N=3)
+-----------------------                                  ------------
+
+1. Send Frame 0 [0] ----- Timer(0) ----->
+2. Send Frame 1 [1] ----- Timer(1) ----->
+3. Send Frame 2 [2] ----- Timer(2) ----->
+
+                                          <-- ACK 0 --- (Frame 0 received)
+                                              (Receiver expects Frame 1)
+                                          (Frame 1 lost)
+                                          <-- ACK 2 --- (Frame 2 received, buffered)
+                                              (Receiver still expects Frame 1, but acknowledges 2)
+
+(Timer for Frame 1 expires)
+
+4. Retransmit Frame 1 [1] -- Timer(1) --> (Only Frame 1 is retransmitted)
+
+                                          <-- ACK 1 --- (Frame 1 received)
+                                              (Receiver now has 0, 1, 2. Delivers 0, 1, 2 to upper layer)
+```
+**Explanation of Diagram:**
+*   Sender transmits frames 0, 1, 2.
+*   Frame 0 is ACKed.
+*   Frame 1 is lost.
+*   Frame 2 arrives out-of-order but is within the receiver's window. The receiver buffers Frame 2 and sends an individual ACK 2.
+*   The sender's timer for Frame 1 expires.
+*   The sender retransmits *only* Frame 1.
+*   Frame 1 is received by the receiver. Now the receiver has 0, 1, and 2 in order (0 was delivered, 1 and 2 were buffered/just arrived). It delivers frames 1 and 2 to the upper layer and slides its window.
+
+**Advantages:**
+*   **High Efficiency:** Much more efficient in high error rate environments because it retransmits only the missing or corrupted frames, not all subsequent frames.
+*   **Better Bandwidth Utilization:** Minimizes redundant transmissions, leading to better throughput.
+**Disadvantages:**
+*   **Complex Receiver Logic:** Requires more complex receiver logic for buffering out-of-order frames and managing individual ACKs.
+*   **Larger Buffer Space:** Needs more buffer space at the receiver to store out-of-order frames.
+*   **Window Size Restriction:** The sender and receiver window sizes must be equal and cannot exceed half the size of the sequence number space ($N_{max}/2$) to prevent ambiguities when sequence numbers wrap around.
+
+### 3.3. Comparison Table: Go-Back-N vs. Selective Repeat ARQ
+
+| Feature                 | Go-Back-N (GBN) ARQ                          | Selective Repeat (SR) ARQ                            |
+| :---------------------- | :------------------------------------------- | :--------------------------------------------------- |
+| **Retransmission**      | Retransmits the lost frame and all subsequent frames. | Retransmits only the specific lost or corrupted frame. |
+| **ACKs**                | Cumulative ACKs (ACK `k` means frames up to `k-1` are received). | Individual ACKs (ACK `k` means only frame `k` is received). |
+| **Receiver Buffering**  | No buffering of out-of-order frames; discards them. | Buffers out-of-order frames within its window.       |
+| **Receiver Complexity** | Simpler.                                     | More complex.                                        |
+| **Bandwidth Usage**     | Less efficient for high error rates (wastes bandwidth). | More efficient for high error rates (optimizes bandwidth). |
+| **Window Sizes**        | Sender window: $N$. Receiver window: 1.      | Sender window: $N$. Receiver window: $N$. (Both $\le N_{max}/2$) |
+| **Throughput**          | Lower, especially with high error rates.     | Higher, even with high error rates.                  |
+
+---
+
+## 4. CSMA/CA and CSMA/CD Procedures (CO2)
+
+CSMA (Carrier Sense Multiple Access) protocols are used in shared medium networks to control access to the transmission medium and handle potential collisions. They are essential for efficient communication where multiple devices share a single physical pathway.
+
+### 4.1. CSMA/CD (Carrier Sense Multiple Access with Collision Detection)
+
+**Context:** Primarily used in **wired Ethernet** networks (IEEE 802.3). The physical nature of wired connections allows a transmitting station to simultaneously listen for collisions.
+
+**Problem Addressed:** In a shared bus or hub-based Ethernet, if two stations transmit simultaneously, their signals collide, corrupting data. CSMA/CD aims to detect these collisions and recover gracefully.
+
+#### 4.1.1. Functioning of CSMA/CD
+
+The procedure involves the following steps for a station wishing to transmit:
+
+1.  **Carrier Sense:** The station first listens to the transmission medium to check if it is currently busy (i.e., if another station is transmitting).
+    *   **If busy:** The station waits for a short, random period and then re-senses the carrier.
+    *   **If idle:** The station proceeds to transmit its data.
+2.  **Transmit Data:** The station begins transmitting its data frame.
+3.  **Collision Detection:** While transmitting, the station continues to monitor the medium to detect if its signal is interfering with another station's signal (a collision).
+    *   If a collision is detected (e.g., by monitoring for an abnormally high signal amplitude), the transmitting station immediately stops its transmission.
+4.  **Jamming Signal:** Upon detecting a collision, the station sends a short "jamming signal" throughout the network. This ensures that all other transmitting stations are aware of the collision and cease their transmissions.
+5.  **Random Backoff:** All stations involved in the collision then enter a random backoff period. This period is determined using an algorithm called "truncated binary exponential backoff," which helps to prevent immediate re-collisions by staggering retransmission attempts.
+6.  **Retransmit:** After the backoff period, the stations re-enter the CSMA/CD process from step 1 (Carrier Sense) to attempt retransmission.
+
+#### 4.1.2. Diagram of CSMA/CD Procedure
+
+```
+    Station A                                                Station B
+    ----------                                                ----------
+    1. Sense Carrier (Idle) -----------------------------> 1. Sense Carrier (Idle)
+    2. Transmit Data --------------------(Collision)-----> 2. Transmit Data
+        (Detects Collision)                  ^
+                                             |
+                                            (Collision occurs, signals interfere)
+                                             |
+    3. Send Jamming Signal ----------------->
+    4. Random Backoff (wait) -----------------------------> 3. Detects Collision
+                                                             4. Send Jamming Signal
+                                                             5. Random Backoff (wait)
+
+    (After backoff, Station A tries again)
+    1. Sense Carrier (Idle)
+    2. Transmit Data -------------------------------------> (Station A transmits successfully)
+                                                            (Station B continues to wait or senses busy)
+```
+**Explanation of Diagram:**
+*   Both Station A and Station B sense the channel as idle and begin transmitting almost simultaneously.
+*   Their signals collide on the shared medium.
+*   Both stations detect the collision while transmitting.
+*   They both send a jamming signal to ensure all other stations (including each other) are aware of the collision.
+*   Both stations then engage in a random backoff period.
+*   After their respective backoffs, one station (e.g., A) senses the channel idle and transmits successfully, while the other (B) waits.
+
+**Key Point:** Collision detection is feasible in wired networks because the electrical signals are strong enough to be monitored during transmission, and the collision can be detected by changes in voltage levels.
+
+### 4.2. CSMA/CA (Carrier Sense Multiple Access with Collision Avoidance)
+
+**Context:** Primarily used in **wireless LANs (Wi-Fi)**, as specified by IEEE 802.11 standards.
+
+**Problem Addressed:** Collision detection is difficult or impossible in wireless environments due to:
+*   **Hidden Node Problem:** A station might be able to hear the Access Point (AP) but not another station, leading to collisions at the AP that the transmitting station cannot detect.
+*   **Fading/Signal Attenuation:** Wireless signals weaken over distance, making it hard to detect collisions (a distant collision might not be strong enough to be detected by the transmitter).
+*   **Half-Duplex Operation:** Most wireless NICs cannot transmit and receive simultaneously, making collision detection during transmission impractical.
+
+CSMA/CA therefore focuses on *avoiding* collisions before they happen, rather than detecting and recovering from them.
+
+#### 4.2.1. Functioning of CSMA/CA (Basic Mechanism)
+
+The procedure involves several steps, often including mechanisms like interframe spacing and random backoff:
+
+1.  **Carrier Sense:** A station wanting to transmit first listens to the wireless channel to determine if it is idle. This is done for a specific period known as DIFS (Distributed InterFrame Space).
+    *   **If busy:** The station defers its transmission and waits for the channel to become idle for a DIFS period.
+    *   **If idle:** The station then waits for an additional **random backoff period**. This random delay is crucial for collision avoidance, as it reduces the probability that multiple stations, after finding the channel idle, will transmit simultaneously.
+2.  **Transmit Data:** After the DIFS and random backoff, if the channel remains idle, the station transmits its data frame.
+3.  **Acknowledgement (ACK):** The transmitting station waits for an **acknowledgement (ACK)** from the receiving station. If no ACK is received within a specified timeout period, it assumes a collision or data loss has occurred.
+4.  **Retransmit:** If no ACK is received, the station re-enters the CSMA/CA process, potentially with a longer random backoff, to attempt retransmission.
+
+#### 4.2.2. CSMA/CA with RTS/CTS (Request To Send / Clear To Send)
+
+To further mitigate the hidden node problem, CSMA/CA often employs an optional handshake mechanism:
+
+1.  **RTS (Request To Send):** The transmitting station first sends a short RTS frame to the intended receiver. This RTS frame includes the duration of the upcoming data transmission.
+2.  **CTS (Clear To Send):** If the receiver is ready, it responds with a CTS frame. This CTS frame also includes the duration of the data transmission.
+3.  **Network Allocation Vector (NAV):** All stations that hear either the RTS or the CTS set an internal timer called the Network Allocation Vector (NAV) to the duration specified in the RTS/CTS. They then defer their own transmissions until the NAV timer expires. This creates a "virtual carrier sense."
+4.  **Transmit Data:** Upon receiving the CTS, the original transmitting station sends its data frame.
+5.  **Acknowledgement (ACK):** The receiver, after successfully receiving the data, sends an ACK frame.
+
+#### 4.2.3. Diagram of CSMA/CA with RTS/CTS
+
+```
+    Station A (Sender)                     Access Point (Receiver)              Station C (Hidden Node)
+    ------------------                     -----------------------              -----------------------
+
+    1. Sense Channel (Idle)
+    2. Wait DIFS
+    3. Random Backoff
+
+    4. Send RTS [Duration X] ------------->
+                                            5. Receives RTS
+                                            6. Sends CTS [Duration X] ---------> (Station C hears CTS, sets NAV for X, defers)
+                                            <---------------------------
+    7. Receives CTS
+    8. Send Data [Duration X] ------------->
+                                            9. Receives Data
+                                            10. Sends ACK ---------------------> (Station C sees channel busy, continues to defer)
+                                            <---------------------------
+    11. Receives ACK (Successful Transmission)
+```
+**Explanation of Diagram:**
+*   Station A wants to send data. It senses the channel, waits DIFS, and performs a random backoff.
+*   Station A sends an RTS to the AP.
+*   The AP receives the RTS and responds with a CTS.
+*   Station C, which might be a hidden node to Station A but *can* hear the AP, receives the CTS. It then sets its NAV and knows to defer transmission for the specified duration (X), thus avoiding a collision with A's data.
+*   Station A receives the CTS and proceeds to send its data.
+*   The AP receives the data and sends an ACK. Station C continues to defer while the data and ACK are being transmitted.
+*   The transmission is successful.
+
+**Key Point:** CSMA/CA tries to *avoid* collisions through techniques like random backoff and the RTS/CTS handshake, and relies on positive acknowledgements to confirm successful delivery.
+
+### 4.3. Comparison Table: CSMA/CD vs. CSMA/CA
+
+| Feature                 | CSMA/CD (Collision Detection)                | CSMA/CA (Collision Avoidance)                 |
+| :---------------------- | :------------------------------------------- | :-------------------------------------------- |
+| **Medium**              | Wired Ethernet (e.g., coaxial, twisted pair) | Wireless LAN (Wi-Fi)                          |
+| **Goal**                | Detect collisions and recover.               | Avoid collisions before they occur.           |
+| **Detection Method**    | Monitor signal strength/voltage levels during transmission. | Indirect (via ACK from receiver, or RTS/CTS handshake). |
+| **Action on Collision** | Stop transmission immediately, send jamming signal, backoff. | No direct detection. Assumes collision if no ACK received, then backoff. |
+| **Overhead**            | Minimal unless collisions are frequent.      | Higher (due to random backoff, DIFS, SIFS, and optional RTS/CTS/ACK). |
+| **Hidden Node Problem** | Not applicable in wired networks.            | A significant concern, mitigated by RTS/CTS.  |
+| **Efficiency**          | Generally more efficient under moderate loads. | Less efficient due to overhead, but necessary for wireless. |
+| **Duplex Mode**         | Full-duplex possible, but CD applies to half-duplex segments. | Half-duplex (cannot transmit and receive simultaneously). |

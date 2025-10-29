@@ -1,0 +1,120 @@
+CPU,Central Processing Unit
+RAM,Random Access Memory
+ROM,Read Only Memory
+USB,Universal Serial Bus
+SSD,Solid State Drive
+HDD,Hard Disk Drive
+API,Application Programming Interface
+HTTP,HyperText Transfer Protocol
+HTTPS,HyperText Transfer Protocol Secure
+IP,Internet Protocol
+TCP,Transmission Control Protocol
+UDP,User Datagram Protocol
+URL,Uniform Resource Locator
+GUI,Graphical User Interface
+CLI,Command Line Interface
+IDE,Integrated Development Environment
+OS,Operating System
+LAN,Local Area Network
+WAN,Wide Area Network
+VPN,Virtual Private Network
+AI,Artificial Intelligence
+ML,Machine Learning
+IoT,Internet of Things
+SQL,Structured Query Language
+HTML,HyperText Markup Language
+CSS,Cascading Style Sheets
+JS,JavaScript
+JSON,JavaScript Object Notation
+XML,eXtensible Markup Language
+PDF,Portable Document Format
+GIF,Graphics Interchange Format
+PNG,Portable Network Graphics
+JPEG,Joint Photographic Experts Group
+DNS,Domain Name System
+MAC,Media Access Control
+BIOS,Basic Input Output System
+POST,Power On Self Test
+LCD,Liquid Crystal Display
+LED,Light Emitting Diode
+CMOS,Complementary Metal Oxide Semiconductor
+CAD,Computer-Aided Design
+CAE,Computer-Aided Engineering
+BASIC,Beginner's All-purpose Symbolic Instruction Code
+WWW,World Wide Web
+SEO,Search Engine Optimization
+URI,Uniform Resource Identifier
+SMTP,Simple Mail Transfer Protocol
+POP,Post Office Protocol
+IMAP,Internet Message Access Protocol
+VLAN,Virtual Local Area Network
+BI,Business Intelligence
+ERP,Enterprise Resource Planning
+CRM,Customer Relationship Management
+JWT,JSON Web Token
+TTS,Text To Speech
+OCR,Optical Character Recognition
+UI,User Interface
+UX,User Experience
+XYZ58,Example Full Form for XYZ58
+XYZ59,Example Full Form for XYZ59
+XYZ60,Example Full Form for XYZ60
+XYZ61,Example Full Form for XYZ61
+XYZ62,Example Full Form for XYZ62
+XYZ63,Example Full Form for XYZ63
+XYZ64,Example Full Form for XYZ64
+XYZ65,Example Full Form for XYZ65
+XYZ66,Example Full Form for XYZ66
+XYZ67,Example Full Form for XYZ67
+XYZ68,Example Full Form for XYZ68
+XYZ69,Example Full Form for XYZ69
+XYZ70,Example Full Form for XYZ70
+XYZ71,Example Full Form for XYZ71
+XYZ72,Example Full Form for XYZ72
+XYZ73,Example Full Form for XYZ73
+XYZ74,Example Full Form for XYZ74
+XYZ75,Example Full Form for XYZ75
+XYZ76,Example Full Form for XYZ76
+XYZ77,Example Full Form for XYZ77
+XYZ78,Example Full Form for XYZ78
+XYZ79,Example Full Form for XYZ79
+XYZ80,Example Full Form for XYZ80
+XYZ81,Example Full Form for XYZ81
+XYZ82,Example Full Form for XYZ82
+XYZ83,Example Full Form for XYZ83
+XYZ84,Example Full Form for XYZ84
+XYZ85,Example Full Form for XYZ85
+XYZ86,Example Full Form for XYZ86
+XYZ87,Example Full Form for XYZ87
+XYZ88,Example Full Form for XYZ88
+XYZ89,Example Full Form for XYZ89
+XYZ90,Example Full Form for XYZ90
+XYZ91,Example Full Form for XYZ91
+XYZ92,Example Full Form for XYZ92
+XYZ93,Example Full Form for XYZ93
+XYZ94,Example Full Form for XYZ94
+XYZ95,Example Full Form for XYZ95
+XYZ96,Example Full Form for XYZ96
+XYZ97,Example Full Form for XYZ97
+XYZ98,Example Full Form for XYZ98
+XYZ99,Example Full Form for XYZ99
+XYZ100,Example Full Form for XYZ100
+XYZ101,Example Full Form for XYZ101
+XYZ102,Example Full Form for XYZ102
+XYZ103,Example Full Form for XYZ103
+XYZ104,Example Full Form for XYZ104
+XYZ105,Example Full Form for XYZ105
+XYZ106,Example Full Form for XYZ106
+XYZ107,Example Full Form for XYZ107
+XYZ108,Example Full Form for XYZ108
+XYZ109,Example Full Form for XYZ109
+XYZ110,Example Full Form for XYZ110
+XYZ111,Example Full Form for XYZ111
+XYZ112,Example Full Form for XYZ112
+XYZ113,Example Full Form for XYZ113
+XYZ114,Example Full Form for XYZ114
+XYZ115,Example Full Form for XYZ115
+XYZ116,Example Full Form for XYZ116
+XYZ117,Example Full Form for XYZ117
+XYZ118,Example Full Form for XYZ118
+XYZ119,Example Full Form for XYZ119

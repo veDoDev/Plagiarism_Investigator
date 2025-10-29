@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Paper Check - Plagiarism Investigator</title>
+    <link rel="stylesheet" href="{% static 'checker/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Research Paper Check</h1>
+
+        {% if error %}
+            <div class="result" style="background:#7a2b2b;">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="file-group">
+                <label for="research_paper">Upload Research Paper (PDF/DOCX):</label>
+                <input type="file" name="research_paper" id="research_paper" required>
+            </div>
+            <button type="submit" class="btn">Check</button>
+        </form>
+
+        {% if result %}
+            <h2>Results</h2>
+            <ul>
+                {% for url, similarity in result.items %}
+                    <li>
+                        <strong>{{ url }}</strong>: Similarity: {{ similarity }}%
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+        <div class="navigation-buttons">
+            <a href="{% url 'check_plagiarism' %}" class="btn">Raw Text Check</a>
+            <a href="{% url 'file_check' %}" class="btn">File Check</a>
+            <a href="{% url 'assignment_check' %}" class="btn">Assignment Check</a>
+            <a href="{% url 'multi_file_check' %}" class="btn">Multi File Check</a>
+            <a href="{% url 'research_paper_check' %}" class="btn">Research Paper Check</a>
+        </div>
+</body>
+</html>

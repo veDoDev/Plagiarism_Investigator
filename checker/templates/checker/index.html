@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Raw Text Check - Plagiarism Investigator</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'checker/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Raw Text Check</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="textarea-group">
+                <label for="text1">Source Text:</label>
+                <textarea name="text1" id="text1" placeholder="Enter source text" required></textarea>
+            </div>
+            <div class="textarea-group">
+                <label for="text2">Test Text:</label>
+                <textarea name="text2" id="text2" placeholder="Enter test text" required></textarea>
+            </div>
+            <button type="submit" class="btn">Check</button>
+        </form>
+
+        {% if result %}
+            <div class="result">
+                <h2>Results</h2>
+                <p><strong>Similarity:</strong> {{ result.similarity }}%</p>
+                <p><strong>Confidence:</strong> {{ result.confidence }}%</p>
+            </div>
+        {% endif %}
+
+        <div class="navigation-buttons">
+            <a href="{% url 'check_plagiarism' %}" class="btn">Raw Text Check</a>
+            <a href="{% url 'file_check' %}" class="btn">File Check</a>
+            <a href="{% url 'assignment_check' %}" class="btn">Assignment Check</a>
+            <a href="{% url 'multi_file_check' %}" class="btn">Multi File Check</a>
+            <a href="{% url 'research_paper_check' %}" class="btn">Research Paper Check</a>
+        </div>
+    </div>
+</body>
+</html>

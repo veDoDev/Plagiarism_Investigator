@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment Check - Plagiarism Investigator</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'checker/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Assignment Check</h1>
+
+        {% if error %}
+            <div class="result" style="background:#7a2b2b;">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="textarea-group">
+                <label for="assignment_text">Assignment Text (optional if you upload teacher solution):</label>
+                <textarea name="assignment_text" id="assignment_text" rows="4" placeholder="Paste assignment prompt here..."></textarea>
+            </div>
+
+            <div class="file-group">
+                <label for="teacher_file">Or Upload Teacher's Solution (optional):</label>
+                <input type="file" name="teacher_file" id="teacher_file" accept=".docx,.txt">
+            </div>
+
+            <hr>
+
+            <div class="textarea-group">
+                <label for="student_text">Student Text (paste) or Upload Student File:</label>
+                <textarea name="student_text" id="student_text" rows="6" placeholder="Paste student solution here..."></textarea>
+            </div>
+
+            <div class="file-group">
+                <label for="student_file">Upload Student File:</label>
+                <input type="file" name="student_file" id="student_file" accept=".docx,.txt">
+            </div>
+
+            <div class="file-group">
+                <label for="max_tokens">AI Settings (Max Tokens):</label>
+                <input type="number" name="max_tokens" id="max_tokens" value="1000" min="100" max="4000">
+            </div>
+
+            <button type="submit" class="btn">Run Assignment Check</button>
+        </form>
+
+        {% if result %}
+            <div class="result">
+                <h2>Results</h2>
+                <p><strong>Similarity:</strong> {{ result.similarity }}%</p>
+                <p><strong>Confidence:</strong> {{ result.confidence }}%</p>
+                {% if result.saved_paths.generated_solution %}
+                    <p><strong>Generated Solution:</strong> 
+                        <br>
+                        <br>
+                        <a href="{{ MEDIA_URL }}{{ result.saved_paths.generated_solution }}" download class="btn">Download Solution</a>
+                    </p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="navigation-buttons">
+            <a href="{% url 'check_plagiarism' %}" class="btn">Raw Text Check</a>
+            <a href="{% url 'file_check' %}" class="btn">File Check</a>
+            <a href="{% url 'assignment_check' %}" class="btn">Assignment Check</a>
+            <a href="{% url 'multi_file_check' %}" class="btn">Multi File Check</a>
+            <a href="{% url 'research_paper_check' %}" class="btn">Research Paper Check</a>
+        </div>
+    </div>
+</body>
+</html>

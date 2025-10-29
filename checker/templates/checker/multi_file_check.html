@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi File Check - Plagiarism Investigator</title>
+    <link rel="stylesheet" href="{% static 'checker/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Multi File Check</h1>
+        <p>Compare one student file against multiple reference files</p>
+
+        {% if error %}
+            <div class="result" style="background:#7a2b2b;">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="file-group">
+                <label for="student_file">Upload Student File:</label>
+                <input type="file" name="student_file" id="student_file" required>
+            </div>
+            <div class="file-group">
+                <label for="reference_files">Upload Reference Files:</label>
+                <input type="file" name="reference_files" id="reference_files" multiple required>
+                <small>Hold Ctrl/Cmd to select multiple files</small>
+            </div>
+            <button type="submit" class="btn">Compare Files</button>
+        </form>
+
+        {% if results %}
+            <h2>Results</h2>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Reference File</th>
+                        <th>Similarity</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ result.reference_file }}</td>
+                            <td>{{ result.similarity }}%</td>
+                            <td>{{ result.confidence }}%</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <div class="navigation-buttons">
+            <a href="{% url 'check_plagiarism' %}" class="btn">Raw Text Check</a>
+            <a href="{% url 'file_check' %}" class="btn">File Check</a>
+            <a href="{% url 'assignment_check' %}" class="btn">Assignment Check</a>
+            <a href="{% url 'multi_file_check' %}" class="btn">Multi File Check</a>
+            <a href="{% url 'research_paper_check' %}" class="btn">Research Paper Check</a>
+        </div>
+    </div>
+</body>
+</html>
