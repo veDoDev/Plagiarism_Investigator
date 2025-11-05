@@ -9,7 +9,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Research Paper Check</h1>
+        <h1>🔍 Research Paper Plagiarism Analysis</h1>
+        <p>Upload a research paper (PDF/DOCX) and analyze its similarity with online sources.</p>
 
         {% if error %}
             <div class="result" style="background:#7a2b2b;">{{ error }}</div>
@@ -19,22 +20,217 @@
             {% csrf_token %}
             <div class="file-group">
                 <label for="research_paper">Upload Research Paper (PDF/DOCX):</label>
-                <input type="file" name="research_paper" id="research_paper" required>
+                <input type="file" name="research_paper" id="research_paper" accept=".pdf,.docx" required>
             </div>
-            <button type="submit" class="btn">Check</button>
+            <button type="submit" class="btn">Analyze Paper</button>
         </form>
 
-        {% if result %}
-            <h2>Results</h2>
-            <ul>
-                {% for url, similarity in result.items %}
-                    <li>
-                        <strong>{{ url }}</strong>: Similarity: {{ similarity }}%
-                    </li>
+        {% if processing_status %}
+        <div style="
+            background: #3c3c3c;
+            border-left: 4px solid #f5a623;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+        ">
+            <h3 style="color: #f5a623; margin-bottom: 10px; font-size: 1rem;">📋 Processing Log:</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                {% for status in processing_status %}
+                    <li style="padding: 5px 0; font-family: monospace; color: #eaeaea; font-size: 0.9rem;">{{ status }}</li>
                 {% endfor %}
             </ul>
+        </div>
         {% endif %}
-    </div>
+
+        {% if result %}
+        <div class="result">
+            <!-- Overall Verdict Card -->
+            <div style="
+                padding: 20px; 
+                border-radius: 8px; 
+                margin-bottom: 25px; 
+                text-align: center;
+                {% if result.analysis.verdict_class == 'danger' %}
+                    background-color: #3d2a1f;
+                    border: 2px solid #ff6b35;
+                {% elif result.analysis.verdict_class == 'warning' %}
+                    background-color: #3d331f;
+                    border: 2px solid #ffa500;
+                {% else %}
+                    background-color: #2d3d1f;
+                    border: 2px solid #a8d05d;
+                {% endif %}
+            ">
+                <h2 style="margin: 0; font-size: 1.3rem; 
+                    {% if result.analysis.verdict_class == 'danger' %}
+                        color: #ff6b35;
+                    {% elif result.analysis.verdict_class == 'warning' %}
+                        color: #ffa500;
+                    {% else %}
+                        color: #a8d05d;
+                    {% endif %}
+                ">{{ result.analysis.verdict }}</h2>
+            </div>
+
+            <!-- Key Metrics Cards -->
+            <div class="summary-cards" style="margin-bottom: 30px;">
+                <div style="
+                    background: #3c3c3c;
+                    border: 2px solid {% if result.analysis.max_similarity >= 70 %}#ff6b35{% elif result.analysis.max_similarity >= 40 %}#ffa500{% else %}#f5a623{% endif %};
+                    border-radius: 8px;
+                    padding: 20px;
+                    text-align: center;
+                ">
+                    <h3 style="margin: 0 0 10px 0; color: #b0b0b0; font-size: 14px;">Maximum Similarity</h3>
+                    <p style="
+                        margin: 0;
+                        font-size: 32px;
+                        font-weight: bold;
+                        {% if result.analysis.max_similarity >= 70 %}
+                            color: #ff6b35;
+                        {% elif result.analysis.max_similarity >= 40 %}
+                            color: #ffa500;
+                        {% else %}
+                            color: #f5a623;
+                        {% endif %}
+                    ">{{ result.analysis.max_similarity }}%</p>
+                </div>
+                
+                <div style="
+                    background: #3c3c3c;
+                    border: 2px solid #f5a623;
+                    border-radius: 8px;
+                    padding: 20px;
+                    text-align: center;
+                ">
+                    <h3 style="margin: 0 0 10px 0; color: #b0b0b0; font-size: 14px;">Average Similarity</h3>
+                    <p style="margin: 0; font-size: 32px; font-weight: bold; color: #ffb733;">{{ result.analysis.avg_similarity }}%</p>
+                </div>
+                
+                <div style="
+                    background: #3c3c3c;
+                    border: 2px solid #f5a623;
+                    border-radius: 8px;
+                    padding: 20px;
+                    text-align: center;
+                ">
+                    <h3 style="margin: 0 0 10px 0; color: #b0b0b0; font-size: 14px;">Sources Checked</h3>
+                    <p style="margin: 0; font-size: 32px; font-weight: bold; color: #eaeaea;">{{ result.analysis.total_sources_checked }}</p>
+                </div>
+                
+                <div style="
+                    background: #3c3c3c;
+                    border: 2px solid {% if result.analysis.high_risk_sources > 0 %}#ff6b35{% else %}#f5a623{% endif %};
+                    border-radius: 8px;
+                    padding: 20px;
+                    text-align: center;
+                ">
+                    <h3 style="margin: 0 0 10px 0; color: #b0b0b0; font-size: 14px;">High Risk Sources</h3>
+                    <p style="
+                        margin: 0;
+                        font-size: 32px;
+                        font-weight: bold;
+                        color: {% if result.analysis.high_risk_sources > 0 %}#ff6b35{% else %}#a8d05d{% endif %};
+                    ">{{ result.analysis.high_risk_sources }}</p>
+                </div>
+            </div>
+
+            <!-- Detailed Source Analysis Table -->
+<h2 style="color: #f5a623; margin-top: 30px; margin-bottom: 15px;">📊 Detailed Source Analysis</h2>
+<div style="overflow-x: auto;">
+    <table class="results-table" style="background: #2a2a2a; border-radius: 8px; overflow: hidden; width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #f5a623;">
+                <th style="color: #1c1c1c; padding: 14px; text-align: left; font-weight: bold; font-size: 0.95rem;">Rank</th>
+                <th style="color: #1c1c1c; padding: 14px; text-align: left; font-weight: bold; font-size: 0.95rem;">Source URL</th>
+                <th style="color: #1c1c1c; padding: 14px; text-align: left; font-weight: bold; font-size: 0.95rem;">Similarity</th>
+                <th style="color: #1c1c1c; padding: 14px; text-align: left; font-weight: bold; font-size: 0.95rem;">Risk Level</th>
+                <th style="color: #1c1c1c; padding: 14px; text-align: left; font-weight: bold; font-size: 0.95rem;">Progress</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for source in result.analysis.sources %}
+            <tr style="
+                border-bottom: 1px solid #3c3c3c;
+                {% if source.similarity >= 70 %}
+                    background: #3d2a1f;
+                {% elif source.similarity >= 40 %}
+                    background: #3d331f;
+                {% else %}
+                    background: #2a2a2a;
+                {% endif %}
+            ">
+                <td style="color: #eaeaea; padding: 12px; font-weight: 500;">{{ forloop.counter }}</td>
+                <td style="padding: 12px;">
+                    <a href="{{ source.url }}" target="_blank" style="color: #ffb733; text-decoration: none;">
+                        {{ source.url|truncatechars:50 }}
+                    </a>
+                </td>
+                <td style="color: #eaeaea; padding: 12px;"><strong>{{ source.similarity }}%</strong></td>
+                <td style="padding: 12px;">
+                    <span style="
+                        padding: 4px 10px; 
+                        border-radius: 12px; 
+                        font-size: 0.85em;
+                        font-weight: bold;
+                        {% if source.similarity >= 70 %}
+                            background: #ff6b35;
+                            color: #1c1c1c;
+                        {% elif source.similarity >= 40 %}
+                            background: #ffa500;
+                            color: #1c1c1c;
+                        {% else %}
+                            background: #a8d05d;
+                            color: #1c1c1c;
+                        {% endif %}
+                    ">
+                        {{ source.risk_level }}
+                    </span>
+                </td>
+                <td style="padding: 12px;">
+                    <div style="
+                        width: 100%; 
+                        height: 8px; 
+                        background: #555;
+                        border-radius: 4px; 
+                        overflow: hidden;
+                    ">
+                        <div style="
+                            height: 100%; 
+                            width: {{ source.similarity }}%;
+                            {% if source.similarity >= 70 %}
+                                background: #ff6b35;
+                            {% elif source.similarity >= 40 %}
+                                background: #ffa500;
+                            {% else %}
+                                background: #a8d05d;
+                            {% endif %}
+                        "></div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+            <!-- Paper Information -->
+            <div style="
+                margin-top: 30px; 
+                background-color: #3c3c3c; 
+                padding: 20px; 
+                border-radius: 8px;
+                border-left: 4px solid #f5a623;
+            ">
+                <h2 style="color: #f5a623; margin-bottom: 15px;">📄 Paper Information</h2>
+                <p style="margin: 8px 0; color: #eaeaea;"><strong style="color: #b0b0b0;">Filename:</strong> {{ result.paper_name }}</p>
+                <p style="margin: 8px 0; color: #eaeaea;"><strong style="color: #b0b0b0;">Content Length:</strong> {{ result.paper_length }} characters</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Navigation Buttons at Bottom -->
         <div class="navigation-buttons">
             <a href="{% url 'check_plagiarism' %}" class="btn">Raw Text Check</a>
             <a href="{% url 'file_check' %}" class="btn">File Check</a>
@@ -42,5 +238,6 @@
             <a href="{% url 'multi_file_check' %}" class="btn">Multi File Check</a>
             <a href="{% url 'research_paper_check' %}" class="btn">Research Paper Check</a>
         </div>
+    </div>
 </body>
 </html>

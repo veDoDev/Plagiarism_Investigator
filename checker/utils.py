@@ -267,13 +267,23 @@ def analyze_research_paper(document_text: str, source_urls_dict: dict) -> dict:
     if all_similarities:
         mean_sim = np.mean(all_similarities)
         std_sim = np.std(all_similarities)
-        
         for result in results:
             if result['similarity'] > mean_sim:
                 confidence = min(100, round((result['similarity'] / (std_sim + 1e-6)) * 10, 2))
             else:
                 confidence = max(0, round(result['similarity'] * 0.8, 2))
             result['confidence'] = confidence
+            
+            # Add risk level classification
+            if result['similarity'] >= 70:
+                result['risk_level'] = 'HIGH'
+                result['risk_class'] = 'danger'
+            elif result['similarity'] >= 40:
+                result['risk_level'] = 'MEDIUM'
+                result['risk_class'] = 'warning'
+            else:
+                result['risk_level'] = 'LOW'
+                result['risk_class'] = 'success'
     
     # Sort by similarity (highest first)
     results.sort(key=lambda x: x['similarity'], reverse=True)
@@ -282,10 +292,25 @@ def analyze_research_paper(document_text: str, source_urls_dict: dict) -> dict:
     max_similarity = max(all_similarities) if all_similarities else 0
     avg_similarity = mean_sim if all_similarities else 0
     
+    # Determine overall verdict
+    if max_similarity >= 70:
+        verdict = "HIGH RISK - Significant similarity detected"
+        verdict_class = "danger"
+    elif max_similarity >= 40:
+        verdict = "MODERATE RISK - Some similarity found"
+        verdict_class = "warning"
+    else:
+        verdict = "LOW RISK - Minimal similarity"
+        verdict_class = "success"
+    
     return {
         'sources': results,
         'max_similarity': round(max_similarity, 2),
         'avg_similarity': round(avg_similarity, 2),
         'total_sources_checked': len(results),
-        'high_risk_sources': len([r for r in results if r['similarity'] > 50])
+        'high_risk_sources': len([r for r in results if r['similarity'] > 70]),
+        'medium_risk_sources': len([r for r in results if 40 <= r['similarity'] <= 70]),
+        'low_risk_sources': len([r for r in results if r['similarity'] < 40]),
+        'verdict': verdict,
+        'verdict_class': verdict_class,
     }
