@@ -1,5 +1,3 @@
-Perfect! I can see the problem - the badge line got corrupted in the merge conflict. Here's the **fully corrected README.md** file:
-
 ```markdown
 # Plagiarism Investigator
 
