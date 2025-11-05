@@ -1,11 +1,13 @@
-<<<<<<< HEAD
-Based on your Plagiarism Investigator project files and following best practices for Django README documentation, here's a comprehensive README file:[4][6][8][9][10][11]
+Perfect! I can see the problem - the badge line got corrupted in the merge conflict. Here's the **fully corrected README.md** file:
 
-***
-
+```markdown
 # Plagiarism Investigator
 
-![Python](https://img.shields.ioshields.io/badge/django-5://img.shields.io/badge/license-MIT-orange is an intelligent web application that combines machine learning algorithms and artificial intelligence to detect content similarity across multiple sources. Built with Django, scikit-learn, and Google Gemini AI, the system provides comprehensive plagiarism detection for educational institutions, researchers, and content creators.
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/django-5.2.6-green.svg)](https://www.djangoproject.com/)
+[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
+
+**Plagiarism Investigator** is an intelligent web application that combines machine learning algorithms and artificial intelligence to detect content similarity across multiple sources. Built with Django, scikit-learn, and Google Gemini AI, the system provides comprehensive plagiarism detection for educational institutions, researchers, and content creators.
 
 ## 🚀 Features
 
@@ -66,13 +68,13 @@ Based on your Plagiarism Investigator project files and following best practices
 ### Step-by-Step Setup
 
 1. **Clone the Repository**
-   ```bash
+   ```
    git clone https://github.com/yourusername/plagiarism-investigator.git
    cd plagiarism-investigator
    ```
 
 2. **Create Virtual Environment**
-   ```bash
+   ```
    # Windows
    python -m venv venv
    venv\Scripts\activate
@@ -83,32 +85,32 @@ Based on your Plagiarism Investigator project files and following best practices
    ```
 
 3. **Install Dependencies**
-   ```bash
+   ```
    pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
 4. **Download NLTK Data**
-   ```python
+   ```
    python -c "import nltk; nltk.download('stopwords')"
    ```
 
 5. **Create Environment Variables**
    
    Create a `.env` file in the project root:
-   ```env
+   ```
    GEMINI_API_KEY=your_gemini_api_key_here
    SECRET_KEY=your_django_secret_key_here
    DEBUG=True
    ```
 
 6. **Run Migrations**
-   ```bash
+   ```
    python manage.py migrate
    ```
 
 7. **Create Media Directories**
-   ```bash
+   ```
    mkdir -p media/generated_solutions
    mkdir -p media/cached_urls
    mkdir -p media/research_papers
@@ -119,7 +121,7 @@ Based on your Plagiarism Investigator project files and following best practices
    ```
 
 8. **Run Development Server**
-   ```bash
+   ```
    python manage.py runserver
    ```
 
@@ -142,7 +144,7 @@ Based on your Plagiarism Investigator project files and following best practices
 
 Key configurations in `Plagiarism_Investigator/settings.py`:
 
-```python
+```
 # Database (default: SQLite)
 DATABASES = {
     'default': {
@@ -277,7 +279,7 @@ plagiarism-investigator/
 
 ### Text Preprocessing Pipeline
 
-```python
+```
 def preprocess_text(text):
     # 1. Convert to lowercase
     text = text.lower()
@@ -298,18 +300,18 @@ def preprocess_text(text):
 ### Similarity Detection Algorithm
 
 1. **Vectorization**: Convert texts to TF-IDF vectors
-   ```python
+   ```
    vectorizer = TfidfVectorizer().fit_transform([text1, text2])
    ```
 
 2. **Cosine Similarity**: Calculate angle between vectors
-   ```python
-   similarity = cosine_similarity(vectorizer[0:1], vectorizer[1:2])[0][0]
+   ```
+   similarity = cosine_similarity(vectorizer[0:1], vectorizer[1:2])
    similarity_percent = round(similarity * 100, 2)
    ```
 
 3. **Confidence Calculation**: Statistical analysis of TF-IDF values
-   ```python
+   ```
    mean = np.mean(tfidf_array)
    std = np.std(tfidf_array)
    confidence = round((mean / (std + 1e-6)) * similarity_percent, 2)
@@ -318,7 +320,7 @@ def preprocess_text(text):
 ### AI-Enhanced Features
 
 **Solution Generation**:
-```python
+```
 def generate_solution_with_ai(assignment_text):
     # Check hash-based cache
     cache_path = cached_solution_path(assignment_text)
@@ -332,7 +334,7 @@ def generate_solution_with_ai(assignment_text):
 ```
 
 **Web Source Discovery**:
-```python
+```
 def fetch_similar_urls(document_text):
     # Check cache
     if cached_urls_exist():
@@ -349,13 +351,13 @@ def fetch_similar_urls(document_text):
 ### Google Gemini AI
 
 **Setup**:
-```python
+```
 import google.generativeai as genai
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 ```
 
 **Usage**:
-```python
+```
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 response = client.models.generate_content(
     model="gemini-2.5-flash",
@@ -376,7 +378,7 @@ response = client.models.generate_content(
 ## 🧪 Testing
 
 ### Run Unit Tests
-```bash
+```
 python manage.py test
 ```
 
@@ -414,15 +416,15 @@ Contributions are welcome! Please follow these guidelines:
 
 1. **Fork the Repository**
 2. **Create a Feature Branch**
-   ```bash
+   ```
    git checkout -b feature/YourFeatureName
    ```
 3. **Commit Changes**
-   ```bash
+   ```
    git commit -m "Add: Description of your changes"
    ```
 4. **Push to Branch**
-   ```bash
+   ```
    git push origin feature/YourFeatureName
    ```
 5. **Open Pull Request**
@@ -486,22 +488,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | Web Scraping (8 sources) | 15-30 seconds | 90%+ |
 | Multi-file Comparison (5 files) | 5-10 seconds | 95%+ |
 
-
-***
+---
 
 **Note**: This is an educational project demonstrating machine learning and AI integration. For production use in high-stakes environments, consider additional validation, human review processes, and institutional policies.
-
-[1](https://docs.readme.com/main/docs/python-django-api-metrics)
-[2](https://docs.djangoproject.com/en/5.2/)
-[3](https://gitlab.com/thorgate-public/django-project-template/-/blob/master/README.md)
-[4](https://cubettech.com/resources/blog/the-essential-readme-file-elevating-your-project-with-a-comprehensive-document/)
-[5](https://docs.djangoproject.com/en/5.2/topics/templates/)
-[6](https://django-project-skeleton.readthedocs.io/en/latest/structure.html)
-[7](https://gitlab.cern.ch:8443/hagupta/django-ex-2.2.x/-/blob/master/README.md)
-[8](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/47646897/cf1cb12f-9987-4c9a-8dff-9ec0e7e7c1d9/settings.py)
-[9](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/47646897/d64a8e11-0cad-428a-97cc-08114b42c096/urls.py)
-[10](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/47646897/e97bce29-837c-4b83-aaa0-98cf1f8be51f/utils.py)
-[11](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/47646897/cc649010-070c-474f-8d01-98ed830a8ce7/views.py)
-=======
-"mujhe padho" 
->>>>>>> dd21c6c00e386af25558dbd4884c7f2fb14daee4
+```
